@@ -40,3 +40,5 @@ shot_features = compute_shot_features(pcd)
 
 # Display the shape of the extracted features
 print("Extracted SHOT features shape:", shot_features.shape)
+
+#Reference: https://github.com/uhlmanngroup/pyshot? Last access: 18/12/2024
