@@ -24,7 +24,7 @@ def extract_fpfh_features(pcd, voxel_size=0.05):
 
 if __name__ == "__main__":
     # Path to your point cloud file
-    point_cloud_path = "path/to/your/point_cloud.pcd"
+    point_cloud_path = "/home/dani/Estudos/PIBIC/models/frame0000.pcd"
 
     # Load the point cloud
     pcd = o3d.io.read_point_cloud(point_cloud_path)

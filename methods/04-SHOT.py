@@ -30,7 +30,7 @@ def compute_shot_features(point_cloud, radius=0.1, min_neighbors=3, n_bins=20):
     return descriptors
 
 # Load point cloud using Open3D
-pcd = o3d.io.read_point_cloud("path_to_your_point_cloud.ply")
+pcd = o3d.io.read_point_cloud("/Estudos/PIBIC/models/ricardo9/ply/frame0000.ply")
 
 # Compute normals
 pcd.estimate_normals(search_param=o3d.geometry.KDTreeSearchParamHybrid(radius=0.1, max_nn=30))

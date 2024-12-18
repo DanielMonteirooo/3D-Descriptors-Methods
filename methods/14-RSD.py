@@ -44,7 +44,7 @@ def compute_rsd(point_cloud, radius):
 # Example Usage
 if __name__ == "__main__":
     # Load a point cloud file
-    pcd = o3d.io.read_point_cloud("path_to_your_point_cloud.pcd")
+    pcd = o3d.io.read_point_cloud("/home/dani/Estudos/PIBIC/models/frame0000.pcd")
 
     # Set radius for RSD computation
     search_radius = 0.1  # Adjust based on the scale of your data

@@ -5,7 +5,7 @@
 import open3d as o3d
 
 # Load the point cloud
-pcd = o3d.io.read_point_cloud("path_to_your_point_cloud.ply")
+pcd = o3d.io.read_point_cloud("/home/dani/Estudos/PIBIC/models/ricardo9/ply/frame0000.ply")
 
 # Downsample the point cloud
 voxel_size = 0.05

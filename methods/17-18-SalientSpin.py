@@ -53,7 +53,7 @@ def salient_spin_images(point_cloud, radius=0.1, bin_size=0.01, salient_points=N
 # Example usage
 if __name__ == "__main__":
     # Load a sample point cloud
-    pcd = o3d.io.read_point_cloud("path/to/your/point_cloud.ply")
+    pcd = o3d.io.read_point_cloud("/home/dani/Estudos/PIBIC/models/ricardo9/ply/frame0000.ply")
 
     # Estimate normals if not already present
     if not pcd.has_normals():

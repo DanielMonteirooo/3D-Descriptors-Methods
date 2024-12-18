@@ -36,7 +36,7 @@ def compute_curvature(point_cloud, radius=0.1, max_nn=30):
     return curvatures
 
 # Load point cloud
-pcd = o3d.io.read_point_cloud("path_to_your_point_cloud.ply")
+pcd = o3d.io.read_point_cloud("/home/dani/Estudos/PIBIC/models/ricardo9/ply/frame0000.ply")
 
 # Compute curvature
 curvatures = compute_curvature(pcd)

@@ -84,11 +84,13 @@ def compute_pfh(point_cloud, search_radius=0.05, nb_bins=5):
 # Example usage
 if __name__ == "__main__":
     # Load a point cloud
-    pcd = o3d.io.read_point_cloud("path_to_your_point_cloud.ply")
+    pcd = o3d.io.read_point_cloud("/home/dani/Estudos/PIBIC/models/ricardo9/ply/frame0000.ply")
     
     # Compute PFH features
-    pfh = compute_pfh(pcd, search_radius=0.05, nb_bins=5)
+    pfh = compute_pfh(pcd, search_radius=5, nb_bins=5)
     
     # Display extracted features
     print("Extracted PFH features:")
-    print(pfh)
+    print(pfh.mean())
+
+#Achar uma forma de encontrar o raio de busca ideal: search_radius=?

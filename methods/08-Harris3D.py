@@ -32,7 +32,7 @@ def harris_3d_detection(point_cloud, k=0.04, threshold=1e-6):
     return interest_points
 
 # Load your point cloud
-pcd = o3d.io.read_point_cloud("path_to_your_point_cloud.ply")
+pcd = o3d.io.read_point_cloud("/Estudos/PIBIC/models/ricardo9/ply/frame0000.ply")
 
 # Detect Harris 3D features
 interest_points_idx = harris_3d_detection(pcd)

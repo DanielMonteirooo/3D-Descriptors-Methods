@@ -58,9 +58,11 @@ query_point_index = 100  # Example index; choose based on your data
 spin_image = compute_spin_image(pcd, query_point_index, bin_size=0.01, image_width=50)
 
 # Visualize the Spin-Image
-plt.imshow(spin_image, cmap='hot', interpolation='nearest')
-plt.title("Spin-Image")
-plt.xlabel("Alpha / Bin")
-plt.ylabel("Beta / Bin")
-plt.colorbar(label='Accumulated Count')
-plt.show()
+#plt.imshow(spin_image, cmap='hot', interpolation='nearest')
+#plt.title("Spin-Image")
+#plt.xlabel("Alpha / Bin")
+#plt.ylabel("Beta / Bin")
+#plt.colorbar(label='Accumulated Count')
+#plt.show()
+print(spin_image.mean())
+#Talvez mudar o mathplotlib para tk; pesquisar no stackoverflow
