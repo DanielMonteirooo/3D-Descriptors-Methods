@@ -54,3 +54,4 @@ if __name__ == "__main__":
     print(color_shot_features)
     print(f"Number of features: {color_shot_features.shape[0]}")
     print(f"Feature dimension: {color_shot_features.shape[1]}")
+                                                    

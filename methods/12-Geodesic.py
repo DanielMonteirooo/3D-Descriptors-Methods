@@ -16,11 +16,13 @@ def compute_hks(mesh, num_eigenpairs=100, time_scales=None):
     # This requires computing edge lengths and angles
     # For brevity, detailed computation steps are omitted here
 
-    # Construct the Laplace-Beltrami Operator (LBO)
-    # L = M^{-1} * W, where M is the mass matrix and W is the stiffness matrix
-    # M is typically the lumped mass matrix (diagonal with vertex areas)
-    # W is the cotangent weight matrix
-    # For brevity, detailed construction steps are omitted here
+    # Example of constructing the Laplace-Beltrami Operator (LBO)
+    # Here we use a simplified version for demonstration purposes
+    n_vertices = vertices.shape[0]
+    I = np.arange(n_vertices)
+    M = coo_matrix((np.ones(n_vertices), (I, I)), shape=(n_vertices, n_vertices))  # Mass matrix (identity for simplicity)
+    W = coo_matrix((np.ones(n_vertices), (I, I)), shape=(n_vertices, n_vertices))  # Stiffness matrix (identity for simplicity)
+    L = M - W  # Simplified Laplace-Beltrami Operator
 
     # Perform eigenvalue decomposition
     eigenvalues, eigenvectors = eigsh(L, k=num_eigenpairs, sigma=0, which='LM')

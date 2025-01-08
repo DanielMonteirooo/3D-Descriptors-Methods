@@ -22,7 +22,7 @@ def compute_usc_features(point_cloud, voxel_size=0.05, search_radius=0.1):
     return fpfh
 
 # Load a sample point cloud
-pcd = o3d.io.read_point_cloud("/Estudos/PIBIC/models/ricardo9/ply/frame0000.ply")
+pcd = o3d.io.read_point_cloud("/home/dani/Estudos/PIBIC/models/ricardo9/ply/frame0000.ply")
 
 # Compute USC features
 usc_features = compute_usc_features(pcd)

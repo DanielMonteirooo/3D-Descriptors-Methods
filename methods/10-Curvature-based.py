@@ -1,5 +1,6 @@
 import open3d as o3d
 import numpy as np
+import matplotlib.pyplot as plt  #linha para importar o matplotlib.pyplot
 
 def compute_curvature(point_cloud, radius=0.1, max_nn=30):
     """
