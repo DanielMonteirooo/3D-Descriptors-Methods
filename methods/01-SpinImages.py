@@ -46,7 +46,7 @@ def compute_spin_image(point_cloud, query_point_index, bin_size=0.01, image_widt
     return spin_image
 
 # Load a point cloud
-pcd = o3d.io.read_point_cloud("/home/dani/Estudos/PIBIC/models/Bearded guy.ply")
+pcd = o3d.io.read_point_cloud("/home/dani/Estudos/PIBIC/models/ricardo9/ply/frame0000.ply")
 
 # Estimate normals
 pcd.estimate_normals(search_param=o3d.geometry.KDTreeSearchParamHybrid(radius=0.1, max_nn=30))
@@ -65,4 +65,5 @@ spin_image = compute_spin_image(pcd, query_point_index, bin_size=0.01, image_wid
 #plt.colorbar(label='Accumulated Count')
 #plt.show()
 print(spin_image.mean())
+
 #Talvez mudar o mathplotlib para tk; pesquisar no stackoverflow

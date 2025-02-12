@@ -24,7 +24,8 @@ def extract_fpfh_features(pcd, voxel_size=0.05):
 
 if __name__ == "__main__":
     # Path to your point cloud file
-    point_cloud_path = "/home/dani/Estudos/PIBIC/models/frame0000.pcd"
+    point_cloud_path = "/home/dani/Estudos/PIBIC/APSIPA___M-PCCD/PVS/tmc13_romanoillamp_vox10_dec_geom02_text02_trisoup-predlift.ply"
+    #point_cloud_path = "/home/dani/Estudos/PIBIC/APSIPA___M-PCCD/references/romanoillamp_vox10.ply" #Arquivo pristino
 
     # Load the point cloud
     pcd = o3d.io.read_point_cloud(point_cloud_path)
@@ -40,4 +41,4 @@ if __name__ == "__main__":
     print("FPFH feature dimensions:", fpfh.dimension())
     print("Number of FPFH features:", fpfh.num())
     print("FPFH features data:")
-    print(fpfh.data)
+    print(fpfh.data.mean())

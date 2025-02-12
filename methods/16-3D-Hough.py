@@ -78,3 +78,10 @@ o3d.visualization.draw_geometries([pcd, features_pcd],
                                   height=600,
                                   left=50,
                                   top=50)
+
+'''
+Error:hough_space = compute_3d_hough_transform(pcd, voxel_size)
+  File "/home/dani/Estudos/PIBIC/3D-Descriptors/methods/16-3D-Hough.py", line 31, in compute_3d_hough_transform
+    hough_space[tuple(voxel_idx)] += 1
+IndexError: index 39 is out of bounds for axis 2 with size 39
+'''

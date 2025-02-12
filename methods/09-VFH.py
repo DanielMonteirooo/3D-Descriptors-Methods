@@ -27,7 +27,7 @@ def compute_vfh(point_cloud):
 # Example usage
 if __name__ == "__main__":
     # Load a sample point cloud
-    point_cloud = o3d.io.read_point_cloud("/home/dani/Estudos/PIBIC/models/frame0000.pcd")
+    point_cloud = o3d.io.read_point_cloud("/home/dani/Estudos/PIBIC/APSIPA___M-PCCD/PVS/tmc13_romanoillamp_vox10_dec_geom02_text02_trisoup-predlift.ply")
     
     if point_cloud.is_empty():
         raise ValueError("Loaded point cloud is empty. Please provide a valid point cloud file.")

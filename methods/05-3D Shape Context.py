@@ -53,7 +53,7 @@ def compute_3d_shape_context(point_cloud, bins_radial=5, bins_theta=12, bins_phi
 
 #Example usage
 # Load a point cloud
-pcd = o3d.io.read_point_cloud("/home/dani/Estudos/PIBIC/models/ricardo9/ply/frame0000.ply")
+pcd = o3d.io.read_point_cloud("/home/dani/Estudos/PIBIC/APSIPA___M-PCCD/PVS/tmc13_romanoillamp_vox10_dec_geom02_text02_trisoup-predlift.ply")
 
 # Compute 3D Shape Context descriptors
 descriptors = compute_3d_shape_context(pcd)

@@ -45,7 +45,7 @@ def compute_hks(mesh, num_eigenpairs=100, time_scales=None):
     return hks
 
 # Load a mesh using Open3D
-mesh = o3d.io.read_triangle_mesh("/home/dani/Estudos/PIBIC/models/ricardo9/ply/frame0000.ply")
+mesh = o3d.io.read_triangle_mesh("/home/dani/Estudos/PIBIC/APSIPA___M-PCCD/PVS/tmc13_amphoriskos_vox10_dec_geom04_text04_octree-predlift.ply")
 
 # Compute the HKS
 hks = compute_hks(mesh)

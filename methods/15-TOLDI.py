@@ -1,7 +1,7 @@
 import open3d as o3d
 import numpy as np
 
-def compute_toldi_features(pcd, keypoints, radius=0.1, num_bins=10):
+def compute_toldi_features(pcd, keypoints, radius=2, num_bins=10):
     """
     Computes the TOLDI (Tensor of Local Descriptors for 3D Keypoints) features.
 
