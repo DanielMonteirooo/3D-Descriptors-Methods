@@ -46,7 +46,7 @@ def compute_toldi_features(pcd, keypoints, radius=2, num_bins=10):
 
 # Example Usage
 # Load a sample point cloud
-pcd = o3d.io.read_point_cloud("/home/dani/Estudos/PIBIC/models/ricardo9/ply/frame0000.ply")
+pcd = o3d.io.read_point_cloud("/home/dani/Estudos/PIBIC/APSIPA___M-PCCD/PVS/tmc13_romanoillamp_vox10_dec_geom02_text02_trisoup-predlift.ply")
 
 # Detect keypoints using ISS (Intrinsic Shape Signatures) method
 keypoints = o3d.geometry.keypoint.compute_iss_keypoints(pcd)

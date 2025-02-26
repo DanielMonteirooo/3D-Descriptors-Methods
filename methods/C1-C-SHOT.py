@@ -47,7 +47,7 @@ if __name__ == "__main__":
 
     # Compute Color-SHOT features
     print("Computing Color-SHOT features...")
-    color_shot_features = compute_color_shot_features(pcd, radius=0.05)
+    color_shot_features = compute_color_shot_features(pcd, radius=0.05) #pesquisar como agregar em apenas um vertor, com sklearn
 
     # Show the extracted features
     print("Extracted Color-SHOT features:")
