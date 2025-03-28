@@ -1,40 +1,32 @@
 import pandas as pd
 
-# Carrega o arquivo CSV em um DataFrame
-df = pd.read_csv('/home/dani/Estudos/PIBIC/APSIPA___M-PCCD/apsipa.csv')
+# Caminhos para os arquivos CSV
+input_csv_path = '/home/dani/Estudos/PIBIC/APSIPA___M-PCCD/apsipa.csv'
+output_csv_path = '/home/dani/Estudos/PIBIC/APSIPA___M-PCCD/apsipa_processed.csv'
 
-# Gera uma lista de dicionários a partir do DataFrame
-lista_dicionarios = df.to_dict(orient='records')
+# Carrega o arquivo CSV de entrada em um DataFrame
+df = pd.read_csv(input_csv_path)
 
-# Itera sobre a lista de dicionários
-for index, linha in enumerate(lista_dicionarios):
-    print(f"Linha {index}:")
-    print(f"  SIGNAL: {linha['SIGNAL']}")
-    print(f"  LOCATION: {linha['LOCATION']}")
-    print(f"  REFLOCATION: {linha['REFLOCATION']}")
-    print("---")
+# Processa cada linha do DataFrame e reorganiza os dados conforme especificado
+processed_rows = []
 
-#referencia:
-#rof_path = os.path.join(df[df["ref_location],df["ref"]])
-#test_path = os.path.join(df[df["location"],df["signal"]])
-#ref = o3d.io.read_point_cloud(rof_path)
-#test = o3d.io.read_point_cloud(test_path)
-#ref_feat= [stot(ref)]
-
-
-'''
-# Para realizar operações específicas 
-
-import os
-
-for linha in lista_dicionarios:
-    caminho_pvs = linha['LOCATION']
-    caminho_ref = linha['REFLOCATION']
+for _, input_row in df.iterrows():
+    # Cria um dicionário com a ordem especificada
+    output_row = {
+        "REF": input_row["REF"],
+        "SIGNAL": input_row["SIGNAL"],
+        "SCORE": input_row["SCORE"],
+        "ATTACK": input_row["ATTACK"],
+        "CLASS": input_row["CLASS"]
+    }
     
-    # Exemplo: verificar se os arquivos existem
-    if os.path.exists(caminho_pvs) and os.path.exists(caminho_ref):
-        print(f"Arquivos encontrados para {linha['SIGNAL']}")
-    else:
-        print(f"Arquivos não encontrados para {linha['SIGNAL']}")
+    # Adiciona a linha processada à lista
+    processed_rows.append(output_row)
 
-'''
+# Cria um novo DataFrame com as linhas processadas
+df_processed = pd.DataFrame(processed_rows)
+
+# Salva o DataFrame processado em um novo arquivo CSV
+df_processed.to_csv(output_csv_path, index=False)
+
+print(f"Arquivo CSV processado gerado com sucesso em: {output_csv_path}")

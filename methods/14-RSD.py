@@ -57,7 +57,7 @@ if __name__ == "__main__":
     print(rsd_features[:5])
 
     # Optional: Visualize the point cloud with normals
-    o3d.visualization.draw_geometries([pcd])
+    #o3d.visualization.draw_geometries([pcd])
 
 """
 First 5 RSD features:

@@ -53,4 +53,4 @@ colors = plt.get_cmap('viridis')(curvatures_normalized)[:, :3]
 pcd.colors = o3d.utility.Vector3dVector(colors)
 
 # Visualize point cloud with curvature-based coloring
-o3d.visualization.draw_geometries([pcd])
+#o3d.visualization.draw_geometries([pcd])

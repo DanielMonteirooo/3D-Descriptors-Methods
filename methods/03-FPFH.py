@@ -35,7 +35,7 @@ if __name__ == "__main__":
     pcd_down, fpfh = extract_fpfh_features(pcd)
 
     # Display the downsampled point cloud
-    o3d.visualization.draw_geometries([pcd_down], window_name="Downsampled Point Cloud")
+    #o3d.visualization.draw_geometries([pcd_down], window_name="Downsampled Point Cloud")
 
     # Display the FPFH features
     print("FPFH feature dimensions:", fpfh.dimension())

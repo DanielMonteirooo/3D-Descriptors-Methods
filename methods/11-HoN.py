@@ -59,13 +59,15 @@ hon_descriptor = compute_hon(downpcd)
 import matplotlib.pyplot as plt
 
 # Plot the HoN descriptor
+"""
+
 plt.imshow(hon_descriptor, interpolation='nearest', cmap='viridis')
 plt.title('Histogram of Oriented Normals (HoN)')
 plt.xlabel('Azimuth Bins')
 plt.ylabel('Elevation Bins')
 plt.colorbar(label='Frequency')
 plt.show()
-
+"""
 # Reference: 
 # https://github.com/PFMassiani/consistent_normals_orientation? Last access: 18/12/2024
 # https://github.com/MeshInspector/MeshLib/wiki/Consistent-orientation-of-normals-in-point-clouds? Last access: 18/12/2024

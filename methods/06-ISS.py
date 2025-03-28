@@ -47,4 +47,4 @@ if __name__ == "__main__":
     # Visualize the keypoints
     point_cloud.paint_uniform_color([0.5, 0.5, 0.5])
     iss_keypoints.paint_uniform_color([1.0, 0.0, 0.0])
-    o3d.visualization.draw_geometries([point_cloud, iss_keypoints], point_show_normal=False)
+    #o3d.visualization.draw_geometries([point_cloud, iss_keypoints], point_show_normal=False)

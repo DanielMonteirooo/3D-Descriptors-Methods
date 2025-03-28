@@ -1,87 +1,67 @@
-import open3d as o3d
 import numpy as np
+import open3d as o3d
 
 def compute_3d_hough_transform(point_cloud, voxel_size=0.05):
     """
-    Computes the 3D Hough Transform for a given point cloud.
-
+    Perform 3D Hough Transform on a point cloud to detect objects.
+    
     Parameters:
-        point_cloud (o3d.geometry.PointCloud): Input point cloud.
-        voxel_size (float): Size of the voxels for discretization.
-
+        point_cloud (o3d.geometry.PointCloud): Input 3D point cloud.
+        voxel_size (float): Voxel size for downsampling the point cloud.
+    
     Returns:
-        np.ndarray: A 3D array representing the Hough space (accumulator).
+        keypoints (o3d.geometry.PointCloud): Keypoints detected in the point cloud.
     """
-    # Get the point cloud bounds
-    min_bound = point_cloud.get_min_bound()
-    max_bound = point_cloud.get_max_bound()
+    # Downsample the point cloud for faster processing
+    downsampled_pcd = point_cloud.voxel_down_sample(voxel_size)
+    
+    # Estimate normals for the downsampled point cloud
+    downsampled_pcd.estimate_normals(search_param=o3d.geometry.KDTreeSearchParamHybrid(radius=0.1, max_nn=30))
+    
+    # Compute ISS Keypoints using Open3D
+    keypoints = o3d.geometry.keypoint.compute_iss_keypoints(
+        downsampled_pcd,
+        salient_radius=voxel_size * 2,
+        non_max_radius=voxel_size * 2,
+        gamma_21=0.5,
+        gamma_32=0.5
+    )
+    
+    return keypoints
 
-    # Compute voxel grid dimensions
-    dimensions = ((max_bound - min_bound) / voxel_size).astype(int)
-
-    # Initialize Hough accumulator
-    hough_space = np.zeros(dimensions, dtype=int)
-
-    # Get the point cloud as a numpy array
-    points = np.asarray(point_cloud.points)
-
-    # Transform each point into voxel space
-    for point in points:
-        voxel_idx = ((point - min_bound) / voxel_size).astype(int)
-        hough_space[tuple(voxel_idx)] += 1
-
-    return hough_space
-
-def extract_hough_features(hough_space, threshold=1):
+def visualize_features(original_pcd, keypoints):
     """
-    Extracts features from the 3D Hough space based on a threshold.
-
+    Visualize the original point cloud with extracted keypoints.
+    
     Parameters:
-        hough_space (np.ndarray): The 3D Hough space (accumulator).
-        threshold (int): Minimum number of votes to consider a feature.
-
-    Returns:
-        list: List of voxel indices corresponding to detected features.
+        original_pcd (o3d.geometry.PointCloud): Original input point cloud.
+        keypoints (o3d.geometry.PointCloud): Extracted keypoints.
     """
-    features = np.argwhere(hough_space >= threshold)
-    return features
+    # Colorize the original point cloud and keypoints for visualization
+    original_pcd.paint_uniform_color([0.5, 0.5, 0.5])  # Gray for original
+    keypoints.paint_uniform_color([1.0, 0.75, 0.0])   # Yellow for keypoints
+    
+    # Visualize both together
+    o3d.visualization.draw_geometries([original_pcd, keypoints])
 
-# Load example point cloud
-pcd = o3d.io.read_point_cloud(o3d.data.PLYPointCloud().path)
-
-# Compute 3D Hough Transform
-voxel_size = 0.05
-hough_space = compute_3d_hough_transform(pcd, voxel_size)
-
-# Extract features from Hough space
-threshold = 5
-features = extract_hough_features(hough_space, threshold)
-
-# Print extracted features
-print("Extracted features (voxel indices):")
-print(features)
-
-# Visualize the point cloud and features
-voxel_indices = [tuple(f) for f in features]
-voxel_points = [np.array(voxel_idx) * voxel_size + pcd.get_min_bound() for voxel_idx in voxel_indices]
-
-# Create feature point cloud
-features_pcd = o3d.geometry.PointCloud()
-features_pcd.points = o3d.utility.Vector3dVector(voxel_points)
-features_pcd.paint_uniform_color([1, 0, 0])
-
-# Visualize both original point cloud and features
-pcd.paint_uniform_color([0.5, 0.5, 0.5])
-o3d.visualization.draw_geometries([pcd, features_pcd],
-                                  window_name="3D Hough Transform Features",
-                                  width=800,
-                                  height=600,
-                                  left=50,
-                                  top=50)
-
-'''
-Error:hough_space = compute_3d_hough_transform(pcd, voxel_size)
-  File "/home/dani/Estudos/PIBIC/3D-Descriptors/methods/16-3D-Hough.py", line 31, in compute_3d_hough_transform
-    hough_space[tuple(voxel_idx)] += 1
-IndexError: index 39 is out of bounds for axis 2 with size 39
-'''
+# Main function to demonstrate usage
+if __name__ == "__main__":
+    # Path to your PLY file
+    ply_file_path = "/home/dani/Estudos/PIBIC/APSIPA___M-PCCD/PVS/tmc13_romanoillamp_vox10_dec_geom02_text02_trisoup-predlift.ply"
+    
+    # Load the point cloud from the provided path
+    pcd = o3d.io.read_point_cloud(ply_file_path)
+    
+    if not pcd.has_points():
+        print("Error: The loaded point cloud is empty or invalid.")
+        exit(1)
+    
+    print("Loaded point cloud successfully.")
+    
+    # Perform 3D Hough Transform to extract features
+    extracted_keypoints = compute_3d_hough_transform(pcd)
+    
+    print(f"Extracted {len(extracted_keypoints.points)} keypoints from the point cloud.")
+    
+    # Visualize the results
+    #visualize_features(pcd, extracted_keypoints)
