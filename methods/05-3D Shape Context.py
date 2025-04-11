@@ -1,62 +1,74 @@
-import numpy as np
 import open3d as o3d
+import numpy as np
+from scipy.spatial import cKDTree
 
-def compute_3d_shape_context(point_cloud, bins_radial=5, bins_theta=12, bins_phi=12, r_min=0.1, r_max=1.0):
+def compute_3d_shape_context(pcd, num_radial_bins=5, num_azimuth_bins=12, 
+                            num_polar_bins=4, radius=0.1):
     """
-    Computes the 3D Shape Context descriptor for each point in the point cloud.
-
-    Parameters:
-    - point_cloud (open3d.geometry.PointCloud): Input point cloud.
-    - bins_radial (int): Number of bins in the radial direction.
-    - bins_theta (int): Number of bins in the azimuthal angle (theta).
-    - bins_phi (int): Number of bins in the polar angle (phi).
-    - r_min (float): Minimum radius for the spherical shell.
-    - r_max (float): Maximum radius for the spherical shell.
-
-    Returns:
-    - descriptors (np.ndarray): Array of shape (N, bins_radial * bins_theta * bins_phi) containing
-      the 3D Shape Context descriptors for each point.
+    Compute 3D Shape Context descriptors for a point cloud
     """
-    points = np.asarray(point_cloud.points)
-    N = points.shape[0]
-    descriptors = np.zeros((N, bins_radial * bins_theta * bins_phi))
+    points = np.asarray(pcd.points)
+    kdtree = cKDTree(points)
+    
+    # Parameters for spherical bins
+    radial_edges = np.linspace(0, radius, num_radial_bins+1)
+    azimuth_edges = np.linspace(0, 2*np.pi, num_azimuth_bins+1)
+    polar_edges = np.linspace(0, np.pi, num_polar_bins+1)
+    
+    descriptors = []
+    for i, point in enumerate(points):
+        # Find neighbors within radius
+        indices = kdtree.query_ball_point(point, radius)
+        neighbors = points[indices] - point
+        
+        # Convert to spherical coordinates
+        r = np.linalg.norm(neighbors, axis=1)
+        theta = np.arctan2(neighbors[:,1], neighbors[:,0]) + np.pi  # Azimuth [0, 2π]
+        phi = np.arccos(neighbors[:,2] / (r + 1e-8))                # Polar [0, π]
+        
+        # Create 3D histogram
+        hist, _ = np.histogramdd(
+            np.column_stack((r, theta, phi)),
+            bins=(radial_edges, azimuth_edges, polar_edges)
+        )
+        
+        # Normalize and flatten histogram
+        hist = hist / (len(neighbors) + 1e-8)
+        descriptors.append(hist.flatten())
+    
+    return np.array(descriptors)
 
-    # Compute pairwise distances and differences
-    diff = points[:, np.newaxis, :] - points[np.newaxis, :, :]
-    distances = np.linalg.norm(diff, axis=2)
-    azimuths = np.arctan2(diff[:, :, 1], diff[:, :, 0])  # theta
-    elevations = np.arccos(diff[:, :, 2] / (distances + 1e-10))  # phi
+def visualize_features(pcd, descriptors):
+    """Visualize point cloud with feature intensity coloring"""
+    colors = np.zeros_like(pcd.points)
+    
+    # Use mean descriptor value for coloring
+    colors[:,0] = descriptors.mean(axis=1)  # Red channel
+    colors[:,1] = descriptors.max(axis=1)    # Green channel
+    colors[:,2] = descriptors.min(axis=1)    # Blue channel
+    
+    # Normalize colors
+    colors = (colors - colors.min()) / (colors.max() - colors.min())
+    pcd.colors = o3d.utility.Vector3dVector(colors)
+    o3d.visualization.draw_geometries([pcd])
 
-    # Define bin edges
-    radial_edges = np.logspace(np.log10(r_min), np.log10(r_max), bins_radial + 1)
-    theta_edges = np.linspace(-np.pi, np.pi, bins_theta + 1)
-    phi_edges = np.linspace(0, np.pi, bins_phi + 1)
+# Example usage
+if __name__ == "__main__":
+    # Load sample data
+    pcd1 = o3d.io.read_point_cloud("/home/dani/Estudos/PIBIC/APSIPA___M-PCCD/PVS/tmc13_romanoillamp_vox10_dec_geom02_text02_trisoup-predlift.ply")
 
-    # Compute histograms for each point
-    for i in range(N):
-        # Exclude the point itself from its neighborhood
-        mask = (distances[i] > 1e-10) & (distances[i] <= r_max)
-        r_indices = np.digitize(distances[i][mask], radial_edges) - 1
-        theta_indices = np.digitize(azimuths[i][mask], theta_edges) - 1
-        phi_indices = np.digitize(elevations[i][mask], phi_edges) - 1
 
-        # Accumulate histogram
-        for r, t, p in zip(r_indices, theta_indices, phi_indices):
-            if 0 <= r < bins_radial and 0 <= t < bins_theta and 0 <= p < bins_phi:
-                idx = r * (bins_theta * bins_phi) + t * bins_phi + p
-                descriptors[i, idx] += 1
-
-        # Normalize histogram
-        descriptors[i] /= np.sum(descriptors[i])
-
-    return descriptors
-
-#Example usage
-# Load a point cloud
-pcd = o3d.io.read_point_cloud("/home/dani/Estudos/PIBIC/APSIPA___M-PCCD/PVS/tmc13_romanoillamp_vox10_dec_geom02_text02_trisoup-predlift.ply")
-
-# Compute 3D Shape Context descriptors
-descriptors = compute_3d_shape_context(pcd)
-
-# Display the descriptors for the first point
-print("Descriptor for the first point:", descriptors[0])
+    # Compute descriptors
+    descriptors = compute_3d_shape_context(pcd1)
+    
+    # Visualize features
+    # visualize_features(pcd1, descriptors)
+    
+    # Calculate averages
+    row_avg = descriptors.mean(axis=1).mean()
+    col_avg = descriptors.mean(axis=0).mean()
+    final_avg = (row_avg + col_avg) / 2
+    
+    print(f"Row average: {row_avg:.4f}")
+    print(f"Column average: {col_avg:.4f}")
+    print(f"Final combined average: {final_avg:.4f}")
