@@ -102,7 +102,7 @@ def process_features(base_path):
     features = compute_shot_features(pcd)
     
     if features is None or len(features) == 0:
-        print("No features extracted")
+        #print("No features extracted")
         return []
     
     # Calculate row averages (histogram averages)

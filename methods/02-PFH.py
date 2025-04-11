@@ -117,7 +117,7 @@ if __name__ == "__main__":
     base_path = "/home/dani/Estudos/PIBIC/APSIPA___M-PCCD/PVS/tmc13_romanoillamp_vox10_dec_geom02_text02_trisoup-predlift.ply"
     
     # Generate or load your point cloud (example with random data)
-    example_cloud = np.random.rand(100, 3)  # Replace with actual data
+    example_cloud = np.random.rand(100, 3)  # Alterar para carregar o PLY
     radius = 0.5
     
     # Run processing pipeline

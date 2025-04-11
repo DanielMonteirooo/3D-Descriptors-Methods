@@ -56,19 +56,18 @@ def visualize_features(pcd, descriptors):
 if __name__ == "__main__":
     # Load sample data
     pcd1 = o3d.io.read_point_cloud("/home/dani/Estudos/PIBIC/APSIPA___M-PCCD/PVS/tmc13_romanoillamp_vox10_dec_geom02_text02_trisoup-predlift.ply")
-
-
+    
     # Compute descriptors
     descriptors = compute_3d_shape_context(pcd1)
     
-    # Visualize features
-    # visualize_features(pcd1, descriptors)
+    # Calculate and print row averages
+    row_averages = descriptors.mean(axis=1)
+    print("## Per-Row Averages ##")
+    for idx, avg in enumerate(row_averages):
+        print(f"Row {idx:04d}: {avg:.6f}")
     
-    # Calculate averages
-    row_avg = descriptors.mean(axis=1).mean()
-    col_avg = descriptors.mean(axis=0).mean()
-    final_avg = (row_avg + col_avg) / 2
-    
-    print(f"Row average: {row_avg:.4f}")
-    print(f"Column average: {col_avg:.4f}")
-    print(f"Final combined average: {final_avg:.4f}")
+    # Generate and print all rows
+    print("\n## All Rows in Sequence ##")
+    for idx, row in enumerate(descriptors):
+        print(f"\nRow {idx:04d} features:")
+        print(np.array2string(row, precision=4, suppress_small=True, separator=', '))
