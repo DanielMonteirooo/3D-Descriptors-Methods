@@ -9,17 +9,18 @@ import numpy as np
 from tqdm import tqdm
 
 # Importa os métodos de descritores
-from methods.m01_spinimages import extract_spinimages
+#from methods.m01_spinimages import extract_spinimages
 #from methods.m02_PFH import extract_pfh
 #from methods.m03_FPFH import extract_fpfh
 #from methods.m04_SHOT import extract_shot
+from methods.C14_RGB import compute_rgb_covariance_descriptor
 
 # =======================
 # CONFIGURAÇÕES DO SCRIPT
 # =======================
 INPUT_DATASET_CSV = "/home/dani/Estudos/PIBIC/APSIPA___M-PCCD/apsipa.csv"
 OUTPUT_FEATURES_CSV = "/home/dani/Estudos/PIBIC/APSIPA___M-PCCD/saida_features.csv"
-FEATURES_EXTRACTOR = "spinimages"  # Altere para outros conforme necessário
+FEATURES_EXTRACTOR = "rgb_covariance"  # Altere para outros conforme necessário
 
 # =======================
 # FUNÇÕES AUXILIARES
@@ -32,12 +33,13 @@ def safe_read_point_cloud(path: str):
         return pc
     except Exception as e:
         print(f"Erro ao ler {path}: {e}")
-        return None
+        return None #### ATENCAO
 
 # Mapeamento dos descritores para suas funções
 def get_descriptor_function(name):
     mapping = {
-        "spinimages": extract_spinimages,
+        #"spinimages": extract_spinimages,
+        "rgb_covariance": compute_rgb_covariance_descriptor,
         #"pfh": extract_pfh,
         #"fpfh": extract_fpfh,
         #"shot": extract_shot,
@@ -47,6 +49,7 @@ def get_descriptor_function(name):
         return mapping[name]
     raise ValueError(f'Descritor {name} não disponível.')
 
+"""
 # Função para calcular o histograma (se necessário)
 def compute_histogram(feature_vector, bins=64):
     # Se o vetor já for um histograma, apenas retorne
@@ -55,12 +58,13 @@ def compute_histogram(feature_vector, bins=64):
     # Caso contrário, calcule o histograma global
     hist, _ = np.histogram(feature_vector, bins=bins, density=True)
     return hist
-
+"""
 def feature_extraction(pc, descriptor):
     extract_func = get_descriptor_function(descriptor)
     feature_vector = extract_func(pc)
-    feature_hist = compute_histogram(feature_vector)
-    return feature_hist
+    #feature_hist = compute_histogram(feature_vector)
+    return feature_vector
+
 
 def process_row(input_row, descriptor):
     ref_pc_path = os.path.join(str(input_row["REFLOCATION"]), str(input_row["REF"]))
@@ -81,6 +85,7 @@ def process_row(input_row, descriptor):
         "ATTACK": input_row["ATTACK"],
         "CLASS": input_row["CLASS"]
     }
+    print(test_features) # teste
     for i, ref in enumerate(ref_features):
         output_row[f"fv_ref_{i}"] = ref
     for i, test in enumerate(test_features):

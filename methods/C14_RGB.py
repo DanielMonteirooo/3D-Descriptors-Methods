@@ -27,8 +27,7 @@ def compute_rgb_covariance_descriptor(point_cloud):
     # Compute the covariance matrix
     covariance_matrix = np.cov(centered_features, rowvar=False)
 
-    return covariance_matrix
-
+    return np.linalg.eigvals(np.nan_to_num(covariance_matrix))
 # Path to your point cloud file
 file_path = "/home/dani/Estudos/PIBIC/APSIPA___M-PCCD/PVS/tmc13_romanoillamp_vox10_dec_geom02_text02_trisoup-predlift.ply"
 

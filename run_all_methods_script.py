@@ -10,7 +10,7 @@ def executar_script(caminho_completo, arquivo):
             capture_output=True,
             text=True,
             check=True,
-            timeout=100
+            timeout=10
         )
         fim = time.time()
         tempo_execucao = fim - inicio
