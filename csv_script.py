@@ -8,71 +8,59 @@ import io
 import numpy as np
 from tqdm import tqdm
 
-# Importa os descritores do pacote lbplib3d
-from lbplib3d.olbp import olbp_feature
-from lbplib3d.ulbp import ulbp_feature
-from lbplib3d.nriulbp import nriulbp_feature
-from lbplib3d.rorlbp import rorlbp_feature
-from lbplib3d.ltp import ltp_feature
-from lbplib3d.clbp import clbp_feature
-from lbplib3d.cltp import cltp_feature
-from lbplib3d.cslbp import cslbp_feature
+# Importa os métodos de descritores
+from methods.m01_spinimages import extract_spinimages
+#from methods.m02_PFH import extract_pfh
+#from methods.m03_FPFH import extract_fpfh
+#from methods.m04_SHOT import extract_shot
 
 # =======================
 # CONFIGURAÇÕES DO SCRIPT
 # =======================
 INPUT_DATASET_CSV = "/home/dani/Estudos/PIBIC/APSIPA___M-PCCD/apsipa.csv"
 OUTPUT_FEATURES_CSV = "/home/dani/Estudos/PIBIC/APSIPA___M-PCCD/saida_features.csv"
-FEATURES_EXTRACTOR = "olbp"  # Altere para outros conforme necessário
+FEATURES_EXTRACTOR = "spinimages"  # Altere para outros conforme necessário
 
 # =======================
 # FUNÇÕES AUXILIARES
 # =======================
 
-def feature_extraction(pc, descriptor):
-    fun = function_name_to_callable(descriptor)
-    # Checa se a point cloud tem cor
-    if descriptor in ["olbp", "ulbp", "cslbp", "nriulbp", "rorlbp", "clbp", "cltp"]:
-        if not pc.has_colors():
-            raise ValueError(f"O descritor {descriptor} exige cor na nuvem de pontos.")
-    return fun(pc)
-
-
+# Função de leitura de nuvem de pontos
 def safe_read_point_cloud(path: str):
     try:
-        with tempfile.TemporaryDirectory() as temp_dir:
-            with io.StringIO() as buf, redirect_stdout(buf):
-                pc = o3d.io.read_point_cloud(path)
-                output = buf.getvalue()
-                if "Read PLY failed" in output:
-                    temp_ply = os.path.join(temp_dir, "temp.ply")
-                    ms = pymeshlab.MeshSet()
-                    ms.load_new_mesh(path)
-                    ms.save_current_mesh(temp_ply)
-                    pc = o3d.io.read_point_cloud(temp_ply)
+        pc = o3d.io.read_point_cloud(path)
         return pc
     except Exception as e:
         print(f"Erro ao ler {path}: {e}")
         return None
 
-def function_name_to_callable(function_name: str):
+# Mapeamento dos descritores para suas funções
+def get_descriptor_function(name):
     mapping = {
-        "olbp": olbp_feature,
-        "cslbp": cslbp_feature,
-        "ulbp": ulbp_feature,
-        "nriulbp": nriulbp_feature,
-        "rorlbp": rorlbp_feature,
-        "rltp": ltp_feature,
-        "clbp": clbp_feature,
-        "cltp": cltp_feature
+        "spinimages": extract_spinimages,
+        #"pfh": extract_pfh,
+        #"fpfh": extract_fpfh,
+        #"shot": extract_shot,
+        # ...adicione outros aqui
     }
-    if function_name in mapping:
-        return mapping[function_name]
-    raise ValueError(f'{function_name} não é um descritor disponível.')
+    if name in mapping:
+        return mapping[name]
+    raise ValueError(f'Descritor {name} não disponível.')
+
+# Função para calcular o histograma (se necessário)
+def compute_histogram(feature_vector, bins=64):
+    # Se o vetor já for um histograma, apenas retorne
+    if len(feature_vector.shape) == 1:
+        return feature_vector
+    # Caso contrário, calcule o histograma global
+    hist, _ = np.histogram(feature_vector, bins=bins, density=True)
+    return hist
 
 def feature_extraction(pc, descriptor):
-    fun = function_name_to_callable(descriptor)
-    return fun(pc)
+    extract_func = get_descriptor_function(descriptor)
+    feature_vector = extract_func(pc)
+    feature_hist = compute_histogram(feature_vector)
+    return feature_hist
 
 def process_row(input_row, descriptor):
     ref_pc_path = os.path.join(str(input_row["REFLOCATION"]), str(input_row["REF"]))
