@@ -46,7 +46,7 @@ def safe_read_point_cloud(path: str):
         with io.StringIO() as buf, redirect_stdout(buf):
             pc = o3d.io.read_point_cloud(path)
             output = buf.getvalue()
-        if "Read PLY failed" in output or len (np.array(pc.points)) == 0:
+        if "Read PLY failed" in output:
             try:
                 temp_ply = get_suitable_version_path(path, temp_dir)
                 pc = o3d.io.read_point_cloud(temp_ply)
