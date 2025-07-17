@@ -1,11 +1,11 @@
 import os
 import pandas as pd
 import open3d as o3d
-import pymeshlab
 from contextlib import redirect_stdout
 import tempfile
 import io
 import numpy as np
+import pymeshlab
 from tqdm import tqdm
 
 # Importa os métodos de descritores
@@ -18,8 +18,8 @@ from methods.C14_RGB import compute_rgb_covariance_descriptor
 # =======================
 # CONFIGURAÇÕES DO SCRIPT
 # =======================
-INPUT_DATASET_CSV = "/home/dani/Estudos/PIBIC/APSIPA___M-PCCD/apsipa.csv"
-OUTPUT_FEATURES_CSV = "/home/dani/Estudos/PIBIC/APSIPA___M-PCCD/saida_features.csv"
+INPUT_DATASET_CSV = "/home/dani/Estudos/PIBIC/models/UnB/UnB_PC_IMGS.csv"
+OUTPUT_FEATURES_CSV = "/home/dani/Estudos/PIBIC/models/UnB/saida_features.csv"
 FEATURES_EXTRACTOR = "rgb_covariance" # Altere para outros conforme necessário
 
 
