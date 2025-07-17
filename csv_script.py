@@ -18,8 +18,8 @@ from methods.C14_RGB import compute_rgb_covariance_descriptor
 # =======================
 # CONFIGURAÇÕES DO SCRIPT
 # =======================
-INPUT_DATASET_CSV = "/home/dani/Estudos/PIBIC/models/UnB/UnB_PC_IMGS.csv"
-OUTPUT_FEATURES_CSV = "/home/dani/Estudos/PIBIC/models/UnB/saida_features.csv"
+INPUT_DATASET_CSV = "/home/dani/Estudos/PIBIC/APSIPA___M-PCCD/apsipa.csv"
+OUTPUT_FEATURES_CSV = "/home/dani/Estudos/PIBIC/APSIPA___M-PCCD/saida_features.csv"
 FEATURES_EXTRACTOR = "rgb_covariance" # Altere para outros conforme necessário
 
 
@@ -78,11 +78,11 @@ def feature_extraction(pc, descriptor):
     return feature_vector
 
 def process_row(input_row, descriptor): 
-    #Colunas originais do CSV:
+    #Colunas originais do apsipa.CSV:
     #SIGNAL,REF,SCORE,LOCATION,REFLOCATION,ATTACK,CLASS
     #Colunas do CSV do UnB_PC_IMGS.csv:
     #SIGNAL,SCORE,SCORE_STD,LOCATION,REF,ATTACK,CLASS
-    ref_pc_path = os.path.join(str(input_row["LOCATION"]), str(input_row["REF"]))
+    ref_pc_path = os.path.join(str(input_row["REFLOCATION"]), str(input_row["REF"]))
     test_pc_path = os.path.join(str(input_row["LOCATION"]), str(input_row["SIGNAL"]))
 
     ref_pc = safe_read_point_cloud(ref_pc_path)
@@ -100,8 +100,8 @@ def process_row(input_row, descriptor):
         "SIGNAL": input_row["SIGNAL"],
         "REF": input_row["REF"],
         "LOCATION": input_row["LOCATION"],
+        "REFLOCATION": input_row["REFLOCATION"],
         "SCORE": input_row["SCORE"],
-        "SCORE_STD": input_row["SCORE_STD"],
         "ATTACK": input_row["ATTACK"],
         "CLASS": input_row["CLASS"]
     }
@@ -119,6 +119,10 @@ def process_row(input_row, descriptor):
 def main():
     df_in = pd.read_csv(INPUT_DATASET_CSV)
     rows_out = []
+
+    # Inverta a ordem das linhas:
+    df_in = df_in.iloc[::-1].reset_index(drop=True)
+    
     for _, row in tqdm(df_in.iterrows(), total=df_in.shape[0]):
         result = process_row(row, FEATURES_EXTRACTOR)
         if result is not None:

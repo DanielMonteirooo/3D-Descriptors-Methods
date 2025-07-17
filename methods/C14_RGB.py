@@ -12,14 +12,14 @@ def compute_rgb_covariance_descriptor(point_cloud):
     point_cloud (o3d.geometry.PointCloud): Input point cloud with color information.
     Returns:
     np.ndarray: Eigenvalues of the covariance matrix. Returns an array of zeros if no colors are present.
-    """
+    
     # Garante que a nuvem de pontos tem cores. Se não, retorna zeros.
     # Isso evita que o script quebre e alinha com o comportamento do csv_script.py
     if not point_cloud.has_colors() or len(point_cloud.colors) == 0:
         print("Aviso: A nuvem de pontos não possui informações de cor. Retornando vetor de zeros.")
         # Retorna um vetor de zeros com o mesmo tamanho da saída esperada (6, neste caso).
         return np.zeros(6)
-    
+    """
     # Extract points and colors
     points = np.asarray(point_cloud.points)
     colors = np.asarray(point_cloud.colors)
