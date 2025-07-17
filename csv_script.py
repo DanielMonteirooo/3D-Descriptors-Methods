@@ -77,24 +77,31 @@ def feature_extraction(pc, descriptor):
     # feature_hist = compute_histogram(feature_vector)
     return feature_vector
 
-def process_row(input_row, descriptor):
-    ref_pc_path = os.path.join(str(input_row["REFLOCATION"]), str(input_row["REF"]))
+def process_row(input_row, descriptor): 
+    #Colunas originais do CSV:
+    #SIGNAL,REF,SCORE,LOCATION,REFLOCATION,ATTACK,CLASS
+    #Colunas do CSV do UnB_PC_IMGS.csv:
+    #SIGNAL,SCORE,SCORE_STD,LOCATION,REF,ATTACK,CLASS
+    ref_pc_path = os.path.join(str(input_row["LOCATION"]), str(input_row["REF"]))
     test_pc_path = os.path.join(str(input_row["LOCATION"]), str(input_row["SIGNAL"]))
+
     ref_pc = safe_read_point_cloud(ref_pc_path)
     test_pc = safe_read_point_cloud(test_pc_path)
     if ref_pc is None or test_pc is None:
         print(f"Erro ao processar linha: {input_row}")
-        print(f"ref={ref_pc}",ref_pc_path)
-        print(f"test={test_pc}",test_pc_path)
+        print(f"ref={ref_pc}", ref_pc_path)
+        print(f"test={test_pc}", test_pc_path)
         return None
+
     ref_features = feature_extraction(ref_pc, descriptor)
     test_features = feature_extraction(test_pc, descriptor)
+
     output_row = {
         "SIGNAL": input_row["SIGNAL"],
         "REF": input_row["REF"],
         "LOCATION": input_row["LOCATION"],
-        "REFLOCATION": input_row["REFLOCATION"],
         "SCORE": input_row["SCORE"],
+        "SCORE_STD": input_row["SCORE_STD"],
         "ATTACK": input_row["ATTACK"],
         "CLASS": input_row["CLASS"]
     }
